@@ -2,7 +2,7 @@ mode: "one_app"
 overlays:
   version: "main"
 config:
-  url: https://github.com/educates/educates-workshp-gitops-configurer
+  url: https://github.com/educates/educates-workshop-gitops-configurer
   subPath: "config"
 workshop_bundles:
   - name: "workshop-animals"
