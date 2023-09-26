@@ -1,0 +1,20 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal"}),expects="1+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  portal:
+    #@ if/end data.values.registration.enabled:
+    registration:
+      enabled: #@ data.values.registration.enabled
+
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal"}),expects="1+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  portal:
+    #@ if/end data.values.registration.type:
+    registration:
+      type: #@ data.values.registration.type

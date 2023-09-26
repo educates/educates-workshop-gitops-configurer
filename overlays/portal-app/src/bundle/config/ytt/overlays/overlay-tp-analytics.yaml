@@ -1,0 +1,38 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal"}),expects="1+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  #@ if/end data.values.analytics.webhook_url:
+  analytics:
+    webhook:
+      url: #@ data.values.analytics.webhook_url
+
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal"}),expects="1+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  #@ if/end data.values.analytics.google_trackingId:
+  analytics:
+    google:
+      trackingId: #@ data.values.analytics.google_trackingId
+
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal"}),expects="1+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  #@ if/end data.values.analytics.clarity_trackingId:
+  analytics:
+    clarity:
+      trackingId: #@ data.values.analytics.clarity_trackingId
+
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal"}),expects="1+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  #@ if/end data.values.analytics.amplitude_trackingId:
+  analytics:
+    amplitude:
+      trackingId: #@ data.values.analytics.amplitude_trackingId

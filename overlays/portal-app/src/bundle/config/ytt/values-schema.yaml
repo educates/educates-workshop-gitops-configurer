@@ -1,0 +1,91 @@
+#@data/values-schema
+---
+#! This comes from the commons.yaml file in the gitops-carvel-apps overlays
+#@schema/validation one_of=["app_per_bundle", "one_app"]
+mode: ""
+#! This name defines which TrainingPortal will be created from all the ones defined in the config.yaml file
+#@schema/validation min_len=1
+name: ""
+#! ==========================================================================
+#! === This section is schema for common.yaml file when using gitops approach
+#! ==========================================================================
+index: ""
+live_updates: true
+theme_name: ""
+ancestors:
+  - ""
+sessions:
+  max: 0
+  registered: 0
+  anonymous: 0
+defaults:
+  capacity: 0
+  initial: 0
+  reserved: 0
+  expires: ""
+  overtime: ""
+  deadline: ""
+  orphaned: ""
+  overdue: ""
+  refresh: ""
+cookies_domain: ""
+registration:
+  enabled: false
+  #@schema/nullable
+  #@schema/validation one_of=["one-step", "anonymous"]
+  type: ""
+credentials:
+  admin:
+    username: ""
+    password: ""
+  robot:
+    username: ""
+    password: ""
+analytics:
+  webhook_url: ""
+  google_trackingId: ""
+  clarity_trackingId: ""
+  amplitude_trackingId: ""
+#! ==========================================================================
+#! === This section is schema for config.yaml file when using gitops approach
+#! ==========================================================================
+#@schema/validation min_len=1
+portals:
+  - credentials:
+      admin:
+        username: ""
+        password: ""
+      robot:
+        username: ""
+        password: ""
+    sessions:
+      max: 0
+      registered: 0
+      anonymous: 0
+    defaults:
+      capacity: 0
+      initial: 0
+      reserved: 0
+      expires: ""
+      overtime: ""
+      deadline: ""
+      orphaned: ""
+      overdue: ""
+      refresh: ""
+    #@schema/validation min_len=1
+    name: ""
+    #@schema/nullable
+    title: ""
+    #@schema/validation min_len=1
+    workshops:
+      - capacity: 0
+        initial: 0
+        reserved: 0
+        expires: ""
+        overtime: ""
+        deadline: ""
+        orphaned: ""
+        overdue: ""
+        refresh: ""
+        #@schema/validation min_len=1
+        name: ""

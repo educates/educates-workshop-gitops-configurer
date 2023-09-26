@@ -1,0 +1,96 @@
+#@data/values-schema
+---
+#@schema/validation one_of=["app_per_bundle", "one_app"]
+mode: "app_per_bundle"
+#@schema/validation min_len=1
+environment: ""
+#@schema/validation min_len=1
+syncPeriod: "0h10m0s"
+overlays:
+  #@schema/validation min_len=1
+  url: "ghcr.io/educates/educates-workshop-gitops-configurer"
+  #@schema/validation min_len=1
+  version: "main"
+  #@schema/nullable
+  #@schema/validation one_not_null=["username", "secretRef"]
+  credentials:
+    #@schema/validation min_len=1, when=lambda _, ctx: ctx.parent["password"] != None
+    #@schema/nullable
+    username: ""
+    #@schema/validation min_len=1, when=lambda _, ctx: ctx.parent["username"] != None
+    #@schema/nullable
+    password: ""
+    #@schema/nullable
+    secretRef:
+      #@schema/validation min_len=1
+      name: ""
+      #@schema/validation min_len=1
+      #@schema/nullable
+      namespace: ""
+config:
+  #@schema/validation min_len=1
+  url: https://github.com/educates/educates-workshop-gitops-config
+  #@schema/validation min_len=1
+  ref: origin/main
+  #@schema/nullable
+  subPath: ""
+  #@schema/nullable
+  #@schema/validation one_not_null=["username", "secretRef"]
+  credentials:
+    #@schema/validation not_null=True, min_len=1, when=lambda _, ctx: ctx.parent["password"] != None
+    #@schema/nullable
+    username: ""
+    #@schema/validation not_null=True, min_len=1, when=lambda _, ctx: ctx.parent["username"] != None
+    #@schema/nullable
+    password: ""
+    #@schema/nullable
+    secretRef:
+      #@schema/validation min_len=1
+      name: ""
+      #@schema/validation min_len=1
+      #@schema/nullable
+      namespace: ""
+#! These common_credentials will be applied to all references (config,overlays and workshop_bundles) if not
+#! finner granular credentials are defined
+#@schema/nullable
+#@schema/validation one_not_null=["username", "secretRef"]
+common_credentials:
+  #@schema/validation not_null=True, min_len=1, when=lambda _, ctx: ctx.parent["password"] != None
+  #@schema/nullable
+  username: ""
+  #@schema/validation not_null=True, min_len=1, when=lambda _, ctx: ctx.parent["username"] != None
+  #@schema/nullable
+  password: ""
+  #@schema/nullable
+  secretRef:
+    #@schema/validation min_len=1
+    name: ""
+    #@schema/validation min_len=1
+    #@schema/nullable
+    namespace: ""
+#@schema/validation min_len=1
+workshop_bundles:
+  - #@schema/validation one_not_null=["version", "semver"]
+    #@schema/validation min_len=1
+    name: ""
+    #@schema/validation min_len=1
+    url: ""
+    #@schema/nullable
+    version: ""
+    #@schema/nullable
+    semver: ""
+    #@schema/nullable
+    credentials:
+      #@schema/validation not_null=True, min_len=1, when=lambda _, ctx: ctx.parent["password"] != None
+      #@schema/nullable
+      username: ""
+      #@schema/validation not_null=True, min_len=1, when=lambda _, ctx: ctx.parent["username"] != None
+      #@schema/nullable
+      password: ""
+      #@schema/nullable
+      secretRef:
+        #@schema/validation min_len=1
+        name: ""
+        #@schema/validation min_len=1
+        #@schema/nullable
+        namespace: ""

@@ -1,0 +1,32 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ overlays_creds = None
+#@ if (hasattr(data.values.common_credentials, "secretRef") and (data.values.common_credentials.secretRef != None)):
+#@ if (hasattr(data.values.common_credentials.secretRef, "name") and (data.values.common_credentials.secretRef.name != None)):
+#@ overlays_creds = data.values.common_credentials.secretRef.name
+#@ end
+#@ end
+#@ if (hasattr(data.values.common_credentials, "username") and (data.values.common_credentials.username != None)):
+#@ overlays_creds = "creds"
+#@ end
+#@ if (hasattr(data.values.overlays.credentials, "secretRef") and (data.values.overlays.credentials.secretRef != None)):
+#@ if (hasattr(data.values.overlays.credentials.secretRef, "name") and (data.values.overlays.credentials.secretRef.name != None)):
+#@ overlays_creds = data.values.overlays.credentials.secretRef.name
+#@ end
+#@ end
+#@ if (hasattr(data.values.overlays.credentials, "username") and (data.values.overlays.credentials.username != None)):
+#@ overlays_creds = "creds-overlays"
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"App"}),expects="1+"
+---
+spec:
+  fetch:
+    - image:
+        url: #@ "{}:{}".format(data.values.overlays.url, data.values.overlays.version)
+        #@ if/end overlays_creds:
+        secretRef:
+          name: #@ overlays_creds
+        subPath: "portal-app/src/bundle/config"
+      path: overlays

@@ -1,0 +1,83 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ def training_portal(portal):
+
+#@ max = portal.sessions.max or data.values.sessions.max
+#@ registered = portal.sessions.registered or data.values.sessions.registered
+#@ anonymous = portal.sessions.anonymous or data.values.sessions.anonymous
+
+#@ initial = portal.defaults.initial or data.values.defaults.initial
+#@ reserved = portal.defaults.reserved or data.values.defaults.reserved
+#@ capacity = portal.defaults.capacity or data.values.defaults.capacity
+#@ expires = portal.defaults.expires or data.values.defaults.expires
+#@ overtime = portal.defaults.overtime or data.values.defaults.overtime
+#@ deadline = portal.defaults.deadline or data.values.defaults.deadline
+#@ orphaned = portal.defaults.orphaned or data.values.defaults.orphaned
+#@ overdue = portal.defaults.overdue or data.values.defaults.overdue
+#@ refresh = portal.defaults.refresh or data.values.defaults.refresh
+
+#@ admin_username = portal.credentials.admin.username or data.values.credentials.admin.username
+#@ admin_password = portal.credentials.admin.password or data.values.credentials.admin.password
+#@ robot_username = portal.credentials.robot.username or data.values.credentials.robot.username
+#@ robot_password = portal.credentials.robot.password or data.values.credentials.robot.password
+
+apiVersion: training.educates.dev/v1beta1
+kind: TrainingPortal
+metadata:
+  name: #@ portal.name
+spec:
+  portal:
+    #@ if/end portal.title:
+    title: #@ portal.title
+    #@ if/end initial:
+    initial: #@ initial
+    #@ if/end reserved:
+    reserved: #@ reserved
+    #@ if/end max or registered or anonymous:
+    sessions:
+      #@ if/end max:
+      maximum: #@ max
+      #@ if/end registered:
+      registered: #@ registered
+      #@ if/end anonymous:
+      anonymous: #@ anonymous
+    workshop:
+      defaults:
+        #@ if/end initial:
+        initial: #@ initial
+        #@ if/end reserved:
+        reserved: #@ reserved
+        #@ if/end capacity:
+        capacity: #@ capacity
+        #@ if/end expires:
+        expires: #@ expires
+        #@ if/end overtime:
+        overtime: #@ overtime
+        #@ if/end deadline:
+        deadline: #@ deadline
+        #@ if/end orphaned:
+        orphaned: #@ orphaned
+        #@ if/end overdue:
+        overdue: #@ overdue
+        #@ if/end refresh:
+        refresh: #@ refresh
+    #@ if/end admin_username or admin_password or robot_username or robot_password:
+    credentials:
+      #@ if/end admin_username or admin_password:
+      admin:
+        username: #@ admin_username
+        password: #@ admin_password
+      #@ if/end robot_username or robot_password:
+      robot:
+        username: #@ robot_username
+        password: #@ robot_password
+#@ end
+
+#@ for portal in data.values.portals:
+#@ if data.values.name == portal.name:
+--- #@ training_portal(portal)
+#@ elif data.values.name == "global":
+--- #@ training_portal(portal)
+#@ end
+#@ end

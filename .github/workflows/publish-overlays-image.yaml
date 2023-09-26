@@ -1,0 +1,57 @@
+name: "Publish Overlays Image"
+run-name: Publish Overlays Image to ghcr.io
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - overlays/**
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Publish image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Carvel tools
+        shell: bash
+        run: curl -L https://carvel.dev/install.sh | bash
+
+      - name: Calculate release variables
+        shell: bash
+        run: |
+          REPOSITORY_NAME=${{github.event.repository.name}}
+          echo "REPOSITORY_NAME=${REPOSITORY_NAME,,}" >>${GITHUB_ENV}
+          echo "REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get short version sha
+        id: get_short_sha
+        run: |
+          echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Login to ghcr.io
+        run: |
+          echo ${{secrets.GITHUB_TOKEN}}|docker login ghcr.io -u ${{github.actor}} --password-stdin
+
+      - name: Publish Overlays to GHCR as Imgpkg bundle
+        run: |
+          imgpkg --debug push \
+                 --file ./overlays \
+                 --image ghcr.io/${REPOSITORY_OWNER}/${REPOSITORY_NAME}:${REPOSITORY_TAG}
+        env:
+          REPOSITORY_TAG: ${{ steps.get_short_sha.outputs.short_sha }}
+
+      - name: Install crane
+        uses: imjasonh/setup-crane@v0.1
+
+      - name: Create main tag
+        run: |
+          crane tag ghcr.io/${REPOSITORY_OWNER}/${REPOSITORY_NAME}:${REPOSITORY_TAG} main
+        env:
+          REPOSITORY_TAG: ${{ steps.get_short_sha.outputs.short_sha }}

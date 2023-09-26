@@ -1,0 +1,12 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal"}),expects="1+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  portal:
+    #@ if/end data.values.live_updates:
+    updates:
+      workshop: #@ data.values.live_updates

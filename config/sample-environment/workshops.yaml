@@ -1,0 +1,42 @@
+portals:
+  - name: "workshop-bundle-animals"
+    title: "Animals workshops"
+    sessions:
+      max: 2
+    defaults:
+      expires: 10m
+      orphaned: 5m
+    #   reserved: 24
+    workshops:
+      - name: workshop-dog
+        expires: 60m
+        orphaned: 5m
+        reserved: 0
+      - name: workshop-cat
+        expires: 60m
+        orphaned: 5m
+        reserved: 0
+      - name: workshop-bird
+        expires: 60m
+        orphaned: 5m
+        reserved: 0
+      - name: workshop-fish
+        expires: 60m
+        orphaned: 5m
+        reserved: 0
+      - name: workshop-giraffe
+  - name: "workshop-bundle-colours"
+    sessions:
+      max: 2
+    defaults:
+      expires: 10m
+      orphaned: 5m
+      reserved: 24
+    credentials:
+      admin:
+        username: user
+        password: password
+    workshops:
+      - name: workshop-red
+      - name: workshop-blue
+      - name: workshop-green

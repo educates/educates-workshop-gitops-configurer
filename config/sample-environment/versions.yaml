@@ -1,0 +1,13 @@
+mode: "one_app"
+overlays:
+  version: "main"
+config:
+  url: https://github.com/educates/educates-workshp-gitops-configurer
+  subPath: "config"
+workshop_bundles:
+  - name: "workshop-animals"
+    url: "ghcr.io/educates/educates-workshop-gitops-configurer-workshop-animals-manifests"
+    semver: ">=1.0.0"
+  - name: "workshop-colours"
+    url: "ghcr.io/educates/educates-workshop-gitops-configurer-workshop-colours-manifests"
+    version: "latest"

@@ -1,0 +1,73 @@
+#@ load("@ytt:data", "data")
+
+#@ def git_or_registry_creds_secret(ns, name, username, password):
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ name
+  namespace: #@ ns
+type: kubernetes.io/basic-auth
+stringData:
+  username: #@ username
+  password: #@ password
+#@ end
+
+#@ if data.values.mode == "app_per_bundle":
+
+#@ for bundle in data.values.workshop_bundles:
+
+#@ if hasattr(bundle.credentials, "username") and hasattr(bundle.credentials, "password"):
+#@ if bundle.credentials.username != None and bundle.credentials.password != None:
+--- #@ git_or_registry_creds_secret("workshops-{}".format(bundle.name), "creds-workshops-{}".format(bundle.name), bundle.credentials.username, bundle.credentials.password)
+#@ end
+#@ end
+
+#@ if hasattr(data.values.overlays.credentials, "username") and hasattr(data.values.overlays.credentials, "password"):
+#@ if data.values.overlays.credentials.username != None and data.values.overlays.credentials.password != None:
+--- #@ git_or_registry_creds_secret("workshops-{}".format(bundle.name), "creds-overlays", data.values.overlays.credentials.username, data.values.overlays.credentials.password)
+#@ end
+#@ end
+
+#@ if hasattr(data.values.config.credentials, "username") and hasattr(data.values.config.credentials, "password"):
+#@ if data.values.config.credentials.username != None and data.values.config.credentials.password != None:
+--- #@ git_or_registry_creds_secret("workshops-{}".format(bundle.name), "creds-config", data.values.config.credentials.username, data.values.config.credentials.password)
+#@ end
+#@ end
+
+#@ if hasattr(data.values.common_credentials, "username") and hasattr(data.values.common_credentials, "password"):
+#@ if data.values.common_credentials.username != None and data.values.common_credentials.password != None:
+--- #@ git_or_registry_creds_secret("workshops-{}".format(bundle.name), "creds", data.values.common_credentials.username, data.values.common_credentials.password)
+#@ end
+#@ end
+
+#@ end
+
+#@ else:
+
+#@ for bundle in data.values.workshop_bundles:
+#@ if hasattr(bundle.credentials, "username") and hasattr(bundle.credentials, "password"):
+#@ if bundle.credentials.username != None and bundle.credentials.password != None:
+--- #@ git_or_registry_creds_secret("workshops-{}".format("global"), "creds-workshops-{}".format(bundle.name), bundle.credentials.username, bundle.credentials.password)
+#@ end
+#@ end
+#@ end
+
+#@ if hasattr(data.values.overlays.credentials, "username") and hasattr(data.values.overlays.credentials, "password"):
+#@ if data.values.overlays.credentials.username != None and data.values.overlays.credentials.password != None:
+--- #@ git_or_registry_creds_secret("workshops-{}".format("global"), "creds-overlays", data.values.overlays.credentials.username, data.values.overlays.credentials.password)
+#@ end
+#@ end
+
+#@ if hasattr(data.values.config.credentials, "username") and hasattr(data.values.config.credentials, "password"):
+#@ if data.values.config.credentials.username != None and data.values.config.credentials.password != None:
+--- #@ git_or_registry_creds_secret("workshops-{}".format("global"), "creds-config", data.values.config.credentials.username, data.values.config.credentials.password)
+#@ end
+#@ end
+
+#@ if hasattr(data.values.common_credentials, "username") and hasattr(data.values.common_credentials, "password"):
+#@ if data.values.common_credentials.username != None and data.values.common_credentials.password != None:
+--- #@ git_or_registry_creds_secret("workshops-{}".format("global"), "creds", data.values.common_credentials.username, data.values.common_credentials.password)
+#@ end
+#@ end
+
+#@ end

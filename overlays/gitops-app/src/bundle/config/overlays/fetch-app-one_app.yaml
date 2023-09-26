@@ -1,0 +1,78 @@
+#@ load("@ytt:data", "data")
+
+#@ def image_version(bundle):
+#@ version = bundle.url
+#@ if bundle.version:
+#@   version = version + ":{}".format(bundle.version)
+#@ end
+#@ return version
+#@ end
+
+#@ def app():
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: #@ "workshops-{}".format("global")
+  namespace: #@ "workshops-{}".format("global")
+  annotations:
+    kapp.k14s.io/change-group: #@ "workshops-{}-app".format("global")
+    kapp.k14s.io/change-rule.insert: #@ "upsert after upserting workshops-{}-crb".format("global")
+spec:
+  serviceAccountName: #@ "workshops-{}".format("global")
+  syncPeriod: "0h10m0s"
+  fetch:
+    #@ for bundle in data.values.workshop_bundles:
+    #@ named_creds = None
+    #@ if hasattr(data.values.common_credentials, "secretRef") and data.values.common_credentials.secretRef != None:
+    #@ if hasattr(data.values.common_credentials.secretRef, "name") and data.values.common_credentials.secretRef.name != None:
+    #@ named_creds = data.values.common_credentials.secretRef.name
+    #@ end
+    #@ end
+    #@ if (hasattr(bundle.credentials, "secretRef") and (bundle.credentials.secretRef != None)):
+    #@ if (hasattr(bundle.credentials.secretRef, "name") and (bundle.credentials.secretRef.name != None)):
+    #@ named_creds = bundle.credentials.secretRef.name
+    #@ end
+    #@ end
+    #@ if (hasattr(bundle.credentials, "username") and (bundle.credentials.username != None)) or (hasattr(data.values.common_credentials, "username") and (data.values.common_credentials.username != None)):
+    #@ named_creds = "creds-workshops-{}".format("global") if (hasattr(bundle.credentials, "username") and (bundle.credentials.username != None)) else None
+    #@ named_creds = "creds" if (hasattr(data.values.common_credentials, "username") and (data.values.common_credentials.username != None)) else None
+    #@ end
+    - image:
+        url: #@ image_version(bundle)
+        #@ if/end bundle.semver:
+        tagSelection:
+          semver:
+            constraints: #@ bundle.semver
+        #@ if/end named_creds != None:
+        secretRef:
+          name: #@ named_creds
+      path: #@ "workshops/{}-{}".format("global",bundle.name)
+    #@ end
+    - inline:
+        paths:
+          #@yaml/text-templated-strings
+          default-data.yaml: |
+            name: "global"
+            mode: (@= data.values.mode @)
+      path: values
+  template:
+    - ytt:
+        ignoreUnknownComments: true
+        paths:
+          - workshops
+          - overlays/ytt
+          - overlays/kapp
+        valuesFrom:
+          - path: environment/common.yaml
+          - path: environment/workshops.yaml
+          - path: values
+  deploy:
+    - kapp:
+        rawOptions: ["--app-changes-max-to-keep=5", "--wait-timeout=5m"]
+#@ end
+
+#@ if data.values.mode == "one_app":
+
+--- #@ app()
+
+#@ end

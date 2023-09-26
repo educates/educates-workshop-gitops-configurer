@@ -1,0 +1,40 @@
+overlays:
+  version: "main"
+  credentials:
+    # username: "jorgemoralespou"
+    # password: "xxyyzzxxyyzzxxyyzzxxyyzz"
+    secretRef:
+      name: credentials-secret-overlays
+      namespace: secret-ns
+config:
+  url: https://github.com/educates/educates-workshop-gitops-configurer
+  ref: origin/test-branch
+  subPath: environment
+  credentials:
+    # username: "jorgemoralespou"
+    # password: "xxyyzzxxyyzzxxyyzzxxyyzz"
+    secretRef:
+      name: credentials-secret-config
+      # namespace: secret-ns
+common_credentials:
+  # username: "jorgemoralespou"
+  # password: "xxyyzzxxyyzzxxyyzzxxyyzz"
+  secretRef:
+    name: credentials-secret-common
+    namespace: secret-ns
+workshop_bundles:
+  - name: "spring-guides"
+    url: "ghcr.io/jorgemoralespou/spring-guides-workshop-manifests"
+    #!version: "4e15147"
+    semver: ">1.0.0 <1.1.0"
+    credentials:
+      secretRef:
+        name: credentials-secret-sg
+        namespace: secret-ns
+  - name: "course-spring-academy-sample"
+    url: "ghcr.io/jorgemoralespou/course-spring-academy-sample-workshop-manifests"
+    version: "4e34228"
+    credentials:
+      secretRef:
+        name: credentials-secret-as
+        namespace: secret-ns

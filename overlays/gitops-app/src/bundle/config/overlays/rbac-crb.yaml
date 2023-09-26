@@ -1,0 +1,32 @@
+#@ load("@ytt:data", "data")
+
+#@ def crb(name):
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: #@ "workshops-{}".format(name)
+  annotations:
+    kapp.k14s.io/change-group: #@ "workshops-{}-crb".format(name)
+    kapp.k14s.io/change-rule.insert: #@ "upsert after upserting workshops-{}-sa".format(name)
+    kapp.k14s.io/change-rule.delete: #@ "delete after deleting workshops-{}-app".format(name)
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: #@ "workshops-{}".format(name)
+    namespace: #@ "workshops-{}".format(name)
+#@ end
+
+#@ if data.values.mode == "app_per_bundle":
+
+#@ for bundle in data.values.workshop_bundles:
+--- #@ crb(bundle.name)
+#@ end
+
+#@ else:
+
+--- #@ crb("global")
+
+#@ end

@@ -1,0 +1,16 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal"}),expects="1+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  portal:
+    #@ if/end data.values.theme_name or data.values.ancestors:
+    theme:
+      #@ if/end data.values.theme_name:
+      name: #@ data.values.theme_name
+      #@ if/end data.values.ancestors:
+      frame:
+        ancestors: #@ data.values.ancestors

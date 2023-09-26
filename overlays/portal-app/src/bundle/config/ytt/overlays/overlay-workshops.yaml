@@ -1,0 +1,90 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:struct", "struct")
+#@ load("@ytt:assert", "assert")
+
+#@ def upstream_workshop_list():
+#@   names = []
+#@   for file in data.list("/"):
+#@     if file.endswith ("/workshops.yaml"):
+#@       file_defs = data.read(file)
+#@       for doc in file_defs.split("\n---"):
+#@         parsed_doc = doc.lstrip()
+#@         if parsed_doc != "":
+#@           workshop = struct.encode(yaml.decode(parsed_doc))
+#@           name = workshop["metadata"]["name"]
+#@           names.append(struct.encode({"name": name}))
+#@         end
+#@       end
+#@     end
+#@   end
+#@   return names
+#@ end
+
+#@ def overlay_values(name):
+#@   for portal in data.values.portals:
+#@     if portal.name==name:
+#@       for data_workshop in portal.workshops:
+#!         TODO: Implement below check
+#!         assert.one_of(upstream_workshop_list()).check(data_workshop.name)
+
+#@ capacity = data_workshop.capacity or portal.defaults.capacity
+#@ initial = data_workshop.initial or portal.defaults.initial
+#@ expires = data_workshop.expires or portal.defaults.expires
+#@ orphaned = data_workshop.orphaned or portal.defaults.orphaned
+#@ reserved = data_workshop.reserved or portal.defaults.reserved
+#@ overtime = data_workshop.overtime or portal.defaults.overtime
+#@ deadline = data_workshop.deadline or portal.defaults.deadline
+#@ overdue = data_workshop.overdue or portal.defaults.overdue
+#@ refresh = data_workshop.refresh or portal.defaults.refresh
+
+- name: #@ data_workshop.name
+  #@ if/end capacity:
+  capacity: #@ capacity
+  #@ if/end initial:
+  initial: #@ initial
+  #@ if/end expires:
+  expires: #@ expires
+  #@ if/end orphaned:
+  orphaned: #@ orphaned
+  #@ if/end reserved:
+  reserved: #@ reserved
+  #@ if/end overtime:
+  overtime: #@ overtime
+  #@ if/end deadline:
+  deadline: #@ deadline
+  #@ if/end overdue:
+  overdue: #@ overdue
+  #@ if/end refresh:
+  refresh: #@ refresh
+#@       end
+#@     end
+#@   end
+
+#@ end
+
+#@ def common_items(list1, list2):
+#@     common_list = []
+#@     for item1 in list1:
+#@       if data.values.mode == "app_per_bundle":
+#@         for item2 in list2:
+#@             if item1["name"] == item2["name"]:
+#@                 common_list.append(item1)
+#@                 break
+#@             end
+#@         end
+#@       elif data.values.mode == "one_app":
+#@         common_list.append(item1)
+#@       end
+#@     end
+#@     return common_list
+#@ end
+
+#@ for portal in data.values.portals:
+#@overlay/match by=overlay.subset({"kind":"TrainingPortal", "metadata": {"name": portal.name }}),expects="0+"
+#@overlay/match-child-defaults missing_ok=True
+---
+spec:
+  workshops: #@ common_items(overlay.apply(overlay_values(portal.name)),upstream_workshop_list())
+#@ end

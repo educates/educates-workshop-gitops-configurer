@@ -1,0 +1,34 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ config_creds = None
+#@ if (hasattr(data.values.common_credentials, "secretRef") and (data.values.common_credentials.secretRef != None)):
+#@ if (hasattr(data.values.common_credentials.secretRef, "name") and (data.values.common_credentials.secretRef.name != None)):
+#@ config_creds = data.values.common_credentials.secretRef.name
+#@ end
+#@ end
+#@ if (hasattr(data.values.common_credentials, "username") and (data.values.common_credentials.username != None)):
+#@ config_creds = "creds"
+#@ end
+#@ if (hasattr(data.values.config.credentials, "secretRef") and (data.values.config.credentials.secretRef != None)):
+#@ if (hasattr(data.values.config.credentials.secretRef, "name") and (data.values.config.credentials.secretRef.name != None)):
+#@ config_creds = data.values.config.credentials.secretRef.name
+#@ end
+#@ end
+#@ if (hasattr(data.values.config.credentials, "username") and (data.values.config.credentials.username != None)):
+#@ config_creds = "creds-config"
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"App"}),expects="1+"
+---
+spec:
+  fetch:
+    - git:
+        url: #@ data.values.config.url
+        ref: #@ data.values.config.ref
+        #@ if/end (hasattr(data.values.config, "subPath") and (data.values.config.subPath != None)):
+        subPath: #@ "{}/{}".format(data.values.config.subPath, data.values.environment)
+        #@ if/end config_creds:
+        secretRef:
+          name: #@ config_creds
+      path: environment

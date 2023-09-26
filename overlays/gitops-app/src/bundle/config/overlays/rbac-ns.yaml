@@ -1,0 +1,23 @@
+#@ load("@ytt:data", "data")
+
+#@ def ns(name):
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: #@ "workshops-{}".format(name)
+  annotations:
+    kapp.k14s.io/change-group: #@ "workshops-{}-ns".format(name)
+    kapp.k14s.io/change-rule.delete: #@ "delete after deleting workshops-{}-sa".format(name)
+#@ end
+
+#@ if data.values.mode == "app_per_bundle":
+
+#@ for bundle in data.values.workshop_bundles:
+--- #@ ns(bundle.name)
+#@ end
+
+#@ else:
+
+--- #@ ns("global")
+
+#@ end

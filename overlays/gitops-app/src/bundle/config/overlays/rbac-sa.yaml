@@ -1,0 +1,25 @@
+#@ load("@ytt:data", "data")
+
+#@ def sa(name):
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: #@ "workshops-{}".format(name)
+  namespace: #@ "workshops-{}".format(name)
+  annotations:
+    kapp.k14s.io/change-group: #@ "workshops-{}-sa".format(name)
+    kapp.k14s.io/change-rule.insert: #@ "upsert after upserting workshops-{}-ns".format(name)
+    kapp.k14s.io/change-rule.delete: #@ "delete after deleting workshops-{}-crb".format(name)
+#@ end
+
+#@ if data.values.mode == "app_per_bundle":
+
+#@ for bundle in data.values.workshop_bundles:
+--- #@ sa(bundle.name)
+#@ end
+
+#@ else:
+
+--- #@ sa("global")
+
+#@ end
