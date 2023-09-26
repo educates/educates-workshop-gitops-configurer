@@ -17,7 +17,7 @@ spec:
     - git:
         url: https://github.com/educates/educates-workshop-gitops-configurer
         ref: origin/main
-        subPath: "config/sample_environment"
+        subPath: "config/sample-environment"
       path: environments
   template:
     - ytt:

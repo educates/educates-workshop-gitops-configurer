@@ -3,11 +3,12 @@ overlays:
   version: "main"
 config:
   url: https://github.com/educates/educates-workshp-gitops-configurer
-  subPath: "config"
+  subPath: "config/sample-environment"
 workshop_bundles:
   - name: "workshop-animals"
     url: "ghcr.io/educates/educates-workshop-gitops-configurer-workshop-animals-manifests"
-    semver: ">=1.0.0"
+    #semver: ">=1.0.0"
+    version: "latest"
   - name: "workshop-colours"
     url: "ghcr.io/educates/educates-workshop-gitops-configurer-workshop-colours-manifests"
     version: "latest"
