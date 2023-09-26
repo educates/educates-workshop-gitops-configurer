@@ -5,7 +5,7 @@ metadata:
   name: workshops-gitops
   namespace: package-installs
   annotations:
-    educates_gitops_environment: "sample_environment"
+    educates_gitops_environment: "sample-environment"
 spec:
   serviceAccountName: workshops-gitops-package-installs
   syncPeriod: "0h2m0s"

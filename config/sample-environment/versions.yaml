@@ -3,7 +3,7 @@ overlays:
   version: "main"
 config:
   url: https://github.com/educates/educates-workshp-gitops-configurer
-  subPath: "config/sample-environment"
+  subPath: "config"
 workshop_bundles:
   - name: "workshop-animals"
     url: "ghcr.io/educates/educates-workshop-gitops-configurer-workshop-animals-manifests"
