@@ -27,7 +27,7 @@ spec:
         url: #@ data.values.config.url
         ref: #@ data.values.config.ref
         #@ if/end (hasattr(data.values.config, "subPath") and (data.values.config.subPath != None)):
-        subPath: #@ "{}".format(data.values.config.subPath)
+        subPath: #@ "{}/{}".format(data.values.config.subPath, data.values.environment)
         #@ if/end config_creds:
         secretRef:
           name: #@ config_creds

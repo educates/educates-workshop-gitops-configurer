@@ -3,6 +3,8 @@
 #@schema/validation one_of=["app_per_bundle", "one_app"]
 mode: "app_per_bundle"
 #@schema/validation min_len=1
+environment: ""
+#@schema/validation min_len=1
 syncPeriod: "0h10m0s"
 overlays:
   #@schema/validation min_len=1
