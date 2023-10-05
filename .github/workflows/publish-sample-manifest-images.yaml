@@ -50,7 +50,7 @@ jobs:
                  --file ./test/portal-app/workshops/${{ matrix.bundle }} \
                  --image ghcr.io/${REPOSITORY_OWNER}/${REPOSITORY_NAME}:${REPOSITORY_TAG}
         env:
-          REPOSITORY_TAG: ${{ steps.version.outputs.version}}
+          REPOSITORY_TAG: ${{ steps.version.outputs.version }}
 
       - name: Install crane
         uses: imjasonh/setup-crane@v0.1

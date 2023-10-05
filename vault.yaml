@@ -1,0 +1,48 @@
+# Examples from: https://external-secrets.io/latest/provider/hashicorp-vault/
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vault-token
+stringData:
+  token: hvs.CAESIEgpCku8AQFMhtjg1T1U0jZfZB7RF1TzYeu6bJOx7DhyGh4KHGh2cy5NT0RJVW5BNmhoYXVSNVNRaGNBazFudks
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: vault-backend
+spec:
+  provider:
+    vault:
+      server: "https://vault.console.cerberus.vmware.com/3cc42480-60bc-49a0-9f2f-2f77c049a6cb"
+      path: "secret"
+      # Version is the Vault KV secret engine version.
+      # This can be either "v1" or "v2", defaults to "v2"
+      version: "v2"
+      auth:
+        # points to a secret that contains a vault token
+        # https://www.vaultproject.io/docs/auth/token
+        tokenSecretRef:
+          name: "vault-token"
+          key: "token"
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: vault-example
+spec:
+  refreshInterval: "15s"
+  secretStoreRef:
+    name: vault-backend
+    kind: SecretStore
+  target:
+    name: example-sync
+  data:
+    - secretKey: access-key-id
+      remoteRef:
+        key: /aws
+        property: access-key-id
+    - secretKey: service-account-user
+      remoteRef:
+        key: /aws
+        property: service-account-user

@@ -189,15 +189,13 @@ It will remove the carvel application and dependent config and security config.
 This will produce a list of Carvel Apps with the required k8s credentials and configuration for courses, workshops, ....
 
 ```
-ytt -v environment=test \
-    -v mode=app_per_bundle \
+ytt -v mode=app_per_bundle \
     --data-values-file test/gitops-app/versions.yaml \
     -f overlays/gitops-app/src/bundle/config
 ```
 
 ```
-ytt -v environment=test \
-    -v mode=one_app \
+ytt -v mode=one_app \
     --data-values-file test/gitops-app/versions.yaml \
     -f overlays/gitops-app/src/bundle/config
 ```

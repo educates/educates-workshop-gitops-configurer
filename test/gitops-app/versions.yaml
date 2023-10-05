@@ -9,7 +9,6 @@ overlays:
 config:
   url: https://github.com/educates/educates-workshop-gitops-configurer
   ref: origin/test-branch
-  subPath: environment
   credentials:
     # username: "jorgemoralespou"
     # password: "xxyyzzxxyyzzxxyyzzxxyyzz"
