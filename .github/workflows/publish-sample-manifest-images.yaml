@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - develop
     paths:
       - test/portal-app/workshops/**
   workflow_dispatch:
@@ -57,6 +58,7 @@ jobs:
 
       - name: Create latest tag
         run: |
-          crane tag ghcr.io/${REPOSITORY_OWNER}/${REPOSITORY_NAME}:${REPOSITORY_TAG} latest
+          crane tag ghcr.io/${REPOSITORY_OWNER}/${REPOSITORY_NAME}:${REPOSITORY_TAG} ${TAG}
         env:
           REPOSITORY_TAG: ${{ steps.version.outputs.version }}
+          TAG: ${GITHUB_REF##*/}

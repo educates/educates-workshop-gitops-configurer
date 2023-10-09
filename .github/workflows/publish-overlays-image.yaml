@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - main
+      - develop
+    tags:
+      - "**"
     paths:
       - overlays/**
   workflow_dispatch:
@@ -52,6 +55,7 @@ jobs:
 
       - name: Create main tag
         run: |
-          crane tag ghcr.io/${REPOSITORY_OWNER}/${REPOSITORY_NAME}:${REPOSITORY_TAG} main
+          crane tag ghcr.io/${REPOSITORY_OWNER}/${REPOSITORY_NAME}:${REPOSITORY_TAG} ${TAG}
         env:
           REPOSITORY_TAG: ${{ steps.get_short_sha.outputs.short_sha }}
+          TAG: ${GITHUB_REF##*/}
