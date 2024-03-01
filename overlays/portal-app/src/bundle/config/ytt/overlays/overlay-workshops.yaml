@@ -29,15 +29,15 @@
 #!         TODO: Implement below check
 #!         assert.one_of(upstream_workshop_list()).check(data_workshop.name)
 
-#@ capacity = data_workshop.capacity if data_workshop.capacity!=-1 else portal.defaults.capacity
-#@ initial = data_workshop.initial if data_workshop.initial!=-1 else portal.defaults.initial
-#@ expires = data_workshop.expires or portal.defaults.expires
-#@ orphaned = data_workshop.orphaned or portal.defaults.orphaned
-#@ reserved = data_workshop.reserved if data_workshop.reserved!=-1 else portal.defaults.reserved
-#@ overtime = data_workshop.overtime or portal.defaults.overtime
-#@ deadline = data_workshop.deadline or portal.defaults.deadline
-#@ overdue = data_workshop.overdue or portal.defaults.overdue
-#@ refresh = data_workshop.refresh or portal.defaults.refresh
+#@ capacity = data_workshop.capacity
+#@ initial = data_workshop.initial
+#@ expires = data_workshop.expires
+#@ orphaned = data_workshop.orphaned
+#@ reserved = data_workshop.reserved
+#@ overtime = data_workshop.overtime
+#@ deadline = data_workshop.deadline
+#@ overdue = data_workshop.overdue
+#@ refresh = data_workshop.refresh
 
 - name: #@ data_workshop.name
   #@ if/end capacity != -1:
