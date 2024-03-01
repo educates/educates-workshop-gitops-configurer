@@ -29,26 +29,26 @@
 #!         TODO: Implement below check
 #!         assert.one_of(upstream_workshop_list()).check(data_workshop.name)
 
-#@ capacity = data_workshop.capacity or portal.defaults.capacity
-#@ initial = data_workshop.initial or portal.defaults.initial
+#@ capacity = data_workshop.capacity if data_workshop.capacity!=-1 else portal.defaults.capacity
+#@ initial = data_workshop.initial if data_workshop.initial!=-1 else portal.defaults.initial
 #@ expires = data_workshop.expires or portal.defaults.expires
 #@ orphaned = data_workshop.orphaned or portal.defaults.orphaned
-#@ reserved = data_workshop.reserved or portal.defaults.reserved
+#@ reserved = data_workshop.reserved if data_workshop.reserved!=-1 else portal.defaults.reserved
 #@ overtime = data_workshop.overtime or portal.defaults.overtime
 #@ deadline = data_workshop.deadline or portal.defaults.deadline
 #@ overdue = data_workshop.overdue or portal.defaults.overdue
 #@ refresh = data_workshop.refresh or portal.defaults.refresh
 
 - name: #@ data_workshop.name
-  #@ if/end capacity:
+  #@ if/end capacity != -1:
   capacity: #@ capacity
-  #@ if/end initial:
+  #@ if/end initial != -1:
   initial: #@ initial
   #@ if/end expires:
   expires: #@ expires
   #@ if/end orphaned:
   orphaned: #@ orphaned
-  #@ if/end reserved:
+  #@ if/end reserved != -1:
   reserved: #@ reserved
   #@ if/end overtime:
   overtime: #@ overtime
@@ -88,3 +88,4 @@
 spec:
   workshops: #@ common_items(overlay.apply(overlay_values(portal.name)),upstream_workshop_list())
 #@ end
+
