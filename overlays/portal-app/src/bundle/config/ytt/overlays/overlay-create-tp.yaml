@@ -3,13 +3,13 @@
 
 #@ def training_portal(portal):
 
-#@ max = portal.sessions.max or data.values.sessions.max
-#@ registered = portal.sessions.registered or data.values.sessions.registered
-#@ anonymous = portal.sessions.anonymous or data.values.sessions.anonymous
+#@ max = portal.sessions.max if portal.sessions.max!=-1 else data.values.sessions.max
+#@ registered = portal.sessions.registered if portal.sessions.registered!=-1 else data.values.sessions.registered
+#@ anonymous = portal.sessions.anonymous if portal.sessions.anonymous!=-1 else data.values.sessions.anonymous
 
-#@ initial = portal.defaults.initial or data.values.defaults.initial
-#@ reserved = portal.defaults.reserved or data.values.defaults.reserved
-#@ capacity = portal.defaults.capacity or data.values.defaults.capacity
+#@ initial = portal.defaults.initial if portal.defaults.initial!=-1 else data.values.defaults.initial
+#@ reserved = portal.defaults.reserved if portal.defaults.reserved!=-1 else data.values.defaults.reserved
+#@ capacity = portal.defaults.capacity if portal.defaults.capacity!=-1 else data.values.defaults.capacity
 #@ expires = portal.defaults.expires or data.values.defaults.expires
 #@ overtime = portal.defaults.overtime or data.values.defaults.overtime
 #@ deadline = portal.defaults.deadline or data.values.defaults.deadline
@@ -30,25 +30,24 @@ spec:
   portal:
     #@ if/end portal.title:
     title: #@ portal.title
-    #@ if/end initial:
+    #@ if/end initial != -1:
     initial: #@ initial
-    #@ if/end reserved:
+    #@ if/end reserved != -1:
     reserved: #@ reserved
-    #@ if/end max or registered or anonymous:
     sessions:
-      #@ if/end max:
+      #@ if/end max != -1:
       maximum: #@ max
-      #@ if/end registered:
+      #@ if/end registered != -1:
       registered: #@ registered
-      #@ if/end anonymous:
+      #@ if/end anonymous != -1:
       anonymous: #@ anonymous
     workshop:
       defaults:
-        #@ if/end initial:
+        #@ if/end initial != -1:
         initial: #@ initial
-        #@ if/end reserved:
+        #@ if/end reserved != -1:
         reserved: #@ reserved
-        #@ if/end capacity:
+        #@ if/end capacity != -1:
         capacity: #@ capacity
         #@ if/end expires:
         expires: #@ expires
@@ -81,3 +80,4 @@ spec:
 --- #@ training_portal(portal)
 #@ end
 #@ end
+

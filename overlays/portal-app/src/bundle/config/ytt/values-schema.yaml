@@ -15,13 +15,13 @@ theme_name: ""
 ancestors:
   - ""
 sessions:
-  max: 0
-  registered: 0
-  anonymous: 0
+  max: -1
+  registered: -1
+  anonymous: -1
 defaults:
-  capacity: 0
-  initial: 0
-  reserved: 0
+  capacity: -1
+  initial: -1
+  reserved: -1
   expires: ""
   overtime: ""
   deadline: ""
@@ -59,13 +59,13 @@ portals:
         username: ""
         password: ""
     sessions:
-      max: 0
-      registered: 0
-      anonymous: 0
+      max: -1
+      registered: -1
+      anonymous: -1
     defaults:
-      capacity: 0
-      initial: 0
-      reserved: 0
+      capacity: -1
+      initial: -1
+      reserved: -1
       expires: ""
       overtime: ""
       deadline: ""
@@ -78,9 +78,9 @@ portals:
     title: ""
     #@schema/validation min_len=1
     workshops:
-      - capacity: 0
-        initial: 0
-        reserved: 0
+      - capacity: -1
+        initial: -1
+        reserved: -1
         expires: ""
         overtime: ""
         deadline: ""
