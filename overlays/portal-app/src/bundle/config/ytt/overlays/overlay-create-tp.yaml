@@ -30,10 +30,13 @@ spec:
   portal:
     #@ if/end portal.title:
     title: #@ portal.title
-    #@ if/end initial != -1:
-    initial: #@ initial
-    #@ if/end reserved != -1:
-    reserved: #@ reserved
+    #@ if/end portal.logo:
+    logo: #@ portal.logo
+    #@ if/end portal.labels:
+    labels: #@ portal.labels
+    #@ if/end portal.password:
+    password: #@ portal.password
+    #@ if/end max or registered or anonymous:
     sessions:
       #@ if/end max != -1:
       maximum: #@ max

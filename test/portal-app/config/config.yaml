@@ -1,6 +1,11 @@
 portals:
   - name: "workshop-bundle-animals"
     title: "Animals workshops"
+    logo: "LOGO"
+    labels:
+      - "label1"
+      - "label2"
+    password: "password"
     sessions:
       max: 2
     defaults:
@@ -20,10 +25,10 @@ portals:
         expires: 60m
         orphaned: 5m
         reserved: 0
-      - name: workshop-fish
-        expires: 60m
-        orphaned: 5m
-        reserved: 0
+      # - name: workshop-fish
+      #   expires: 60m
+      #   orphaned: 5m
+      #   reserved: 0
       - name: workshop-giraffe
   - name: "workshop-bundle-colours"
     sessions:

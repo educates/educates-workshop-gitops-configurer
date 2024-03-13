@@ -76,6 +76,13 @@ portals:
     name: ""
     #@schema/nullable
     title: ""
+    #@schema/nullable
+    logo: ""
+    #@schema/nullable
+    labels:
+      - ""
+    #@schema/nullable
+    password: ""
     #@schema/validation min_len=1
     workshops:
       - capacity: -1
