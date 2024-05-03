@@ -6,23 +6,16 @@ rebaseRules:
     type: copy
     sources: [existing, new]
     resourceMatchers:
-      - apiVersionKindMatcher: { apiVersion: training.educates.dev/v1beta1, kind: TrainingPortal }
       - apiVersionKindMatcher: { apiVersion: secrets.educates.dev/v1beta1, kind: SecretCopier }
-      - apiVersionKindMatcher: { apiVersion: secrets.educates.dev/v1beta1, kind: SecretInjector }
   - paths:
       - [metadata, annotations, "kopf.zalando.org/last-handled-configuration"]
-      - [status]
     type: copy
     sources: [existing]
     resourceMatchers:
-      - apiVersionKindMatcher: { apiVersion: training.educates.dev/v1beta1, kind: TrainingPortal }
       - apiVersionKindMatcher: { apiVersion: secrets.educates.dev/v1beta1, kind: SecretCopier }
-      - apiVersionKindMatcher: { apiVersion: secrets.educates.dev/v1beta1, kind: SecretInjector }
-diffAgainstLastAppliedFieldExclusionRules:
-  - paths: 
-      - [metadata, annotations, "kopf.zalando.org/last-handled-configuration"]
-      - [status]
+  - paths:
+      - [spec, syncPeriod]
+    type: copy
+    sources: [existing, new]
     resourceMatchers:
-      - apiVersionKindMatcher: { apiVersion: training.educates.dev/v1beta1, kind: TrainingPortal }
-      - apiVersionKindMatcher: { apiVersion: secrets.educates.dev/v1beta1, kind: SecretCopier }
-      - apiVersionKindMatcher: { apiVersion: secrets.educates.dev/v1beta1, kind: SecretInjector }
+      - apiVersionKindMatcher: { apiVersion: kappctrl.k14s.io/v1alpha1, kind: App }
