@@ -1,3 +1,8 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: package-installs
+---
 kind: ServiceAccount
 apiVersion: v1
 metadata:

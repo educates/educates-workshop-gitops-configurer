@@ -94,48 +94,21 @@ for each training portal
 
 ### Deploy workshop configuration as gitops in an Educates Cluster
 
-**NOTE** THIS NEEDS TO BE REWRITEN AS WE DON'T USE SCRIPTS TO INSTALL/UNINSTALL IN CLUSTER
-
 If manually deploying to an educates cluster,
 do following steps:
 
 1.  Ensure you have an educates cluster, and KUBECONFIG set to point to its config
 
-1.  Configure the following environment variables in shell or runner:
+2.  Create your version of [the configuration files](./config/sample-environment/) in your GitHub gitops repo.
 
-    ```
-    export KUBECONFIG=<path to KUBECONFIG>
-    export WORKSHOP_CONFIG_REPO_URL="https://github.com/<org/repo>" # destination repository with workshop training portal configuration overlays
-    export WORKSHOP_CONFIG_REPO_REF="origin/main" # branch/tag reference at workshop config repository that will be reconciled to cluster - defaults to origin/main
-    export WORKSHOP_OVERLAYS_PKG_URL="vmware-tanzu-learning/educates-workshop-gitops-configurer" # url of overlays package - defaults to vmware-tanzu-learning for prod releases, you may want to override for local development.
-    export ENVIRONMENT="<environment name>" # directory at workshop configuration reposistory from where workshop bundle configuration will be sourced
-    export GITHUB_USER="<>" # github user whose GITHUB_TOKEN has OCI package read permissions to the workshop config repo
-    export GITHUB_TOKEN="<>" # GITHUB_USER's token that OCI package read permissions to the workshop config repo
-    export EDUCATES_VERSION="latest" # defaults to "latest", although you should use the appropriate semver when implemented.
-    ```
+3.  Create the required [RBAC](./resources/rbac.yaml) and [Gitops App definition](./resources/rbac.yaml) and deploy it into your cluster.
 
-    example for spring academy tenant staging environment with defaults
-
-    ```
-    export WORKSHOP_CONFIG_REPO_URL="https://github.com/vmware-tanzu-learning/spring-academy-educates-workshops-config>"
-    export ENVIRONMENT="staging"
-    export GITHUB_USER="<redacted>"
-    export GITHUB_TOKEN="<redacted>"
-    export KUBECONFIG="<redacted>"
-    ```
-
-1.  Run the install script:
-
-    ```bash
-    install/install.sh
-    ```
-
-1.  Verify the application and workshop configuration has reconciled:
+4.  Verify the application and workshop configuration has reconciled:
 
     - via `kapp`:
 
       ```bash
-      kapp list -n package-installs
+      kapp list -n <package-installs>
       ```
 
       you should see similar to follows:
@@ -174,11 +147,7 @@ do following steps:
 
 ### Remove workshop gitops configuration
 
-Run the following script:
-
-```bash
-scripts/uninstall.sh
-```
+Remove the gitops app and RBAC from the cluster.
 
 It will remove the carvel application and dependent config and security config.
 
@@ -192,14 +161,16 @@ This will produce a list of Carvel Apps with the required k8s credentials and co
 ytt -v environment=test \
     -v mode=app_per_bundle \
     --data-values-file test/gitops-app/versions.yaml \
-    -f overlays/gitops-app/src/bundle/config
+    -f overlays/gitops-app/src/bundle/config/ytt \
+    -f overlays/gitops-app/src/bundle/config/kapp
 ```
 
 ```
 ytt -v environment=test \
     -v mode=one_app \
     --data-values-file test/gitops-app/versions.yaml \
-    -f overlays/gitops-app/src/bundle/config
+    -f overlays/gitops-app/src/bundle/config/ytt \
+    -f overlays/gitops-app/src/bundle/config/kapp
 ```
 
 ### Local development/testing of workshop configuration overlays
@@ -211,13 +182,15 @@ ytt -v name=workshop-bundle-colours \
     -v mode=app_per_bundle \
     --data-values-file test/portal-app/config \
     -f test/portal-app/workshops/workshop-bundle-colours \
-    -f overlays/portal-app/src/bundle/config
+    -f overlays/portal-app/src/bundle/config/ytt \
+    -f overlays/portal-app/src/bundle/config/kapp
 
 ytt -v name=workshop-bundle-animals \
     -v mode=app_per_bundle \
     --data-values-file test/portal-app/config \
     -f test/portal-app/workshops/workshop-bundle-animals \
-    -f overlays/portal-app/src/bundle/config
+    -f overlays/portal-app/src/bundle/config/ytt \
+    -f overlays/portal-app/src/bundle/config/kapp
 ```
 
 ```
@@ -225,7 +198,8 @@ ytt -v name=global \
     -v mode=one_app \
     --data-values-file test/portal-app/config \
     -f test/portal-app/workshops/workshop-bundle-animals \
-    -f overlays/portal-app/src/bundle/config
+    -f overlays/portal-app/src/bundle/config/ytt \
+    -f overlays/portal-app/src/bundle/config/kapp
 ```
 
 ## TODO

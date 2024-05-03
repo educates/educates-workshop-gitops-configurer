@@ -1,0 +1,21 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+rebaseRules:
+  - paths:
+      - [spec, rules, { allIndexes: true }, reclaimPolicy]
+    type: copy
+    sources: [existing, new]
+    resourceMatchers:
+      - apiVersionKindMatcher: { apiVersion: secrets.educates.dev/v1beta1, kind: SecretCopier }
+  - paths:
+      - [metadata, annotations, "kopf.zalando.org/last-handled-configuration"]
+    type: copy
+    sources: [existing]
+    resourceMatchers:
+      - apiVersionKindMatcher: { apiVersion: secrets.educates.dev/v1beta1, kind: SecretCopier }
+  - paths:
+      - [spec, syncPeriod]
+    type: copy
+    sources: [existing, new]
+    resourceMatchers:
+      - apiVersionKindMatcher: { apiVersion: kappctrl.k14s.io/v1alpha1, kind: App }

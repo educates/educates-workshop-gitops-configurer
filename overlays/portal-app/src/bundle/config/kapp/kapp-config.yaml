@@ -1,17 +1,13 @@
 apiVersion: kapp.k14s.io/v1alpha1
 kind: Config
 rebaseRules:
-  - path: [metadata, annotations, "kopf.zalando.org/last-handled-configuration"]
+  - paths:
+      - [metadata, annotations, "kopf.zalando.org/last-handled-configuration"]
     type: copy
-    sources: [new, existing]
+    sources: [existing]
     resourceMatchers:
       - apiVersionKindMatcher: { apiVersion: training.educates.dev/v1beta1, kind: TrainingPortal }
+diffAgainstExistingFieldExclusionRules:
   - path: [status]
-    type: copy
-    sources: [new, existing]
-    resourceMatchers:
-      - apiVersionKindMatcher: { apiVersion: training.educates.dev/v1beta1, kind: TrainingPortal }
-diffAgainstLastAppliedFieldExclusionRules:
-  - path: [metadata, annotations, "kopf.zalando.org/last-handled-configuration"]
     resourceMatchers:
       - apiVersionKindMatcher: { apiVersion: training.educates.dev/v1beta1, kind: TrainingPortal }
