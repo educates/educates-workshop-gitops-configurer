@@ -32,12 +32,22 @@ overlays:
       #@schema/nullable
       namespace: ""
 config:
+  #@schema/validation one_of=["git", "local"]
+  type: "git"
   #@schema/validation min_len=1
   url: https://github.com/educates/educates-workshop-gitops-config
   #@schema/validation min_len=1
   ref: origin/main
   #@schema/nullable
   subPath: ""
+  local:
+    secretRef:
+      common:
+        name: "common"
+        namespace: "package-installs"
+      workshops:
+        name: "workshops"
+        namespace: "package-installs"
   #@schema/nullable
   #@schema/validation one_not_null=["username", "secretRef"]
   credentials:

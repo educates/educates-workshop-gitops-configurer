@@ -202,6 +202,12 @@ ytt -v name=global \
     -f overlays/portal-app/src/bundle/config/kapp
 ```
 
+### Local development/testing of workshop configuration overlays in cluster
+
+There's [instructions](./test-local/README.md) on how to test the full gitops reconciler on a local
+kind cluster for development purposes that don't rely on changes in git, but rather on changes on secrets.
+
+
 ## TODO
 
 - implement installation in terraform provisioning

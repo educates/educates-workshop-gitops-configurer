@@ -16,7 +16,10 @@ metadata:
   namespace: #@ "workshops-{}".format("global")
   annotations:
     kapp.k14s.io/change-group: #@ "workshops-{}-app".format("global")
-    kapp.k14s.io/change-rule.insert: #@ "upsert after upserting workshops-{}-crb".format("global")
+    kapp.k14s.io/change-rule.insert.1: #@ "upsert after upserting workshops-{}-crb".format("global")
+    #@ if/end data.values.config.type == "local":
+    kapp.k14s.io/change-rule.insert.2: "upsert after upserting local-config-secrets"
+    kapp.k14s.io/disable-original: ""
 spec:
   serviceAccountName: #@ "workshops-{}".format("global")
   syncPeriod: "0h10m0s"

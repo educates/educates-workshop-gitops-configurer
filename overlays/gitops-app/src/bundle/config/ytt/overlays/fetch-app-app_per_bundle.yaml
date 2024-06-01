@@ -31,7 +31,10 @@ metadata:
   namespace: #@ "workshops-{}".format(bundle.name)
   annotations:
     kapp.k14s.io/change-group: #@ "workshops-{}-app".format(bundle.name)
-    kapp.k14s.io/change-rule.insert: #@ "upsert after upserting workshops-{}-crb".format(bundle.name)
+    kapp.k14s.io/change-rule.insert.1: #@ "upsert after upserting workshops-{}-crb".format(bundle.name)
+    #@ if/end data.values.config.type == "local":
+    kapp.k14s.io/change-rule.insert.2: "upsert after upserting local-config-secrets"
+    kapp.k14s.io/disable-original: ""
 spec:
   serviceAccountName: #@ "workshops-{}".format(bundle.name)
   syncPeriod: "0h10m0s"
