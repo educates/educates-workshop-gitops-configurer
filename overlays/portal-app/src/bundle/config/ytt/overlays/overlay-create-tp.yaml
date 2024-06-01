@@ -25,6 +25,8 @@
 apiVersion: training.educates.dev/v1beta1
 kind: TrainingPortal
 metadata:
+  annotations:
+    kapp.k14s.io/disable-original: ""
   name: #@ portal.name
 spec:
   portal:

@@ -19,6 +19,8 @@
 #@ config_creds = "creds-config"
 #@ end
 
+#@ if data.values.config.type == "git":
+
 #@overlay/match by=overlay.subset({"kind":"App"}),expects="1+"
 ---
 spec:
@@ -32,3 +34,17 @@ spec:
         secretRef:
           name: #@ config_creds
       path: environment
+
+#@ else:
+#@overlay/match by=overlay.subset({"kind":"App"}),expects="1+"
+---
+spec:
+  fetch:
+    - inline: 
+        pathsFrom:
+          - secretRef:
+              name: #@ data.values.config.local.secretRef.common.name
+          - secretRef:
+              name: #@ data.values.config.local.secretRef.workshops.name
+      path: environment
+#@ end
