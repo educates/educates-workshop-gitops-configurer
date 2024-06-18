@@ -197,7 +197,7 @@ ytt -v name=workshop-bundle-animals \
 ytt -v name=global \
     -v mode=one_app \
     --data-values-file test/portal-app/config \
-    -f workshops/workshops/ \
+    -f workshops/ \
     -f overlays/portal-app/src/bundle/config/ytt \
     -f overlays/portal-app/src/bundle/config/kapp
 ```
