@@ -87,11 +87,11 @@ jobs:
           imgpkg push -i ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-colours-manifests:${REPOSITORY_TAG} \
                       -f ${{runner.temp}}/workshops-colours.yaml \
                       --registry-username=${{github.actor}} \
-                      --registry-token=${{secrets.GITHUB_TOKEN}}
+                      --registry-password=${{secrets.GITHUB_TOKEN}}
           imgpkg push -i ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-animals-manifests:${REPOSITORY_TAG} \
                       -f ${{runner.temp}}/workshops-animals.yaml \
                       --registry-username=${{github.actor}} \
-                      --registry-token=${{secrets.GITHUB_TOKEN}}
+                      --registry-password=${{secrets.GITHUB_TOKEN}}
 
       - name: Install crane
         uses: imjasonh/setup-crane@v0.1
