@@ -39,6 +39,7 @@ jobs:
           echo "REPOSITORY_NAME=${REPOSITORY_NAME,,}" >>${GITHUB_ENV}
           echo "REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
           echo "REPOSITORY_TAG=${GITHUB_REF##*/}" >>${GITHUB_ENV}
+          echo "REPOSITORY_SHA_TAG=${GITHUB_SHA::7}" >>${GITHUB_ENV}
 
       - name: Publish workshops and create workshop definitions for bundle-colours
         shell: bash
@@ -84,11 +85,11 @@ jobs:
       - name: Generate bundles
         shell: bash
         run: |
-          imgpkg push -i ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-colours-manifests:${REPOSITORY_TAG} \
+          imgpkg push -i ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-colours-manifests:${REPOSITORY_SHA_TAG} \
                       -f ${{runner.temp}}/workshops-colours.yaml \
                       --registry-username=${{github.actor}} \
                       --registry-password=${{secrets.GITHUB_TOKEN}}
-          imgpkg push -i ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-animals-manifests:${REPOSITORY_TAG} \
+          imgpkg push -i ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-animals-manifests:${REPOSITORY_SHA_TAG} \
                       -f ${{runner.temp}}/workshops-animals.yaml \
                       --registry-username=${{github.actor}} \
                       --registry-password=${{secrets.GITHUB_TOKEN}}
@@ -98,8 +99,10 @@ jobs:
   
       - name: Create latest tags
         run: |
-          crane tag ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-colours-manifests:${REPOSITORY_TAG} latest
-          crane tag ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-animals-manifests:${REPOSITORY_TAG} latest
+          crane tag ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-colours-manifests:${REPOSITORY_SHA_TAG} latest
+          crane tag ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-colours-manifests:${REPOSITORY_SHA_TAG} ${REPOSITORY_TAG}
+          crane tag ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-animals-manifests:${REPOSITORY_SHA_TAG} latest
+          crane tag ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-animals-manifests:${REPOSITORY_SHA_TAG} ${REPOSITORY_TAG}
   
       - name: Create the GitHub release for the workshops
         id: create_release

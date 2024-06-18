@@ -9,7 +9,7 @@
 #@ def upstream_workshop_list():
 #@   names = []
 #@   for file in data.list("/"):
-#@     if regexp.match("workshop[^/]*\.yaml", file):
+#@     if regexp.match("/workshop[^/]*\.yaml", file):
 #@       file_defs = data.read(file)
 #@       for doc in file_defs.split("\n---"):
 #@         parsed_doc = doc.lstrip()
