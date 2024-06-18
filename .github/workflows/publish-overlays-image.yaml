@@ -11,8 +11,6 @@ on:
     branches:
       - main
       - develop
-    paths:
-      - overlays/**
   workflow_dispatch:
 
 jobs:
