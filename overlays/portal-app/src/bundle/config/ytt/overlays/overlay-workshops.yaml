@@ -3,11 +3,13 @@
 #@ load("@ytt:yaml", "yaml")
 #@ load("@ytt:struct", "struct")
 #@ load("@ytt:assert", "assert")
+#@ load("@ytt:regexp", "regexp")
+
 
 #@ def upstream_workshop_list():
 #@   names = []
 #@   for file in data.list("/"):
-#@     if file.endswith ("/workshops.yaml"):
+#@     if regexp.match("workshop[^/]*\.yaml", file):
 #@       file_defs = data.read(file)
 #@       for doc in file_defs.split("\n---"):
 #@         parsed_doc = doc.lstrip()
