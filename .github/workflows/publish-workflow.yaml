@@ -81,6 +81,20 @@ jobs:
           (cd ${{runner.temp}}; tar cvfz workshops-animals.tar.gz workshops/bundle-animals)
           (cd ${{runner.temp}}; zip workshops-animals.zip -r workshops/bundle-animals)
 
+      - name: Generate bundles
+        shell: bash
+        run: |
+          imgpkg push -i ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-colours-manifests:${REPOSITORY_TAG} -f ${{runner.temp}}/workshops-colours.yaml
+          imgpkg push -i ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-animals-manifests:${REPOSITORY_TAG} -f ${{runner.temp}}/workshops-animals.yaml
+
+      - name: Install crane
+        uses: imjasonh/setup-crane@v0.1
+  
+      - name: Create latest tags
+        run: |
+          crane tag ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-colours-manifests:${REPOSITORY_TAG} latest
+          crane tag ghcr.io/${REPOSITORY_OWNER}/educates-workshop-gitops-configurer-workshop-bundle-animals-manifests:${REPOSITORY_TAG} latest
+  
       - name: Create the GitHub release for the workshops
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -92,9 +106,12 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ${{runner.temp}}/workshops.tar.gz
-            ${{runner.temp}}/workshops.zip
             ${{runner.temp}}/workshops-all.yaml
+            ${{runner.temp}}/workshops-all.tar.gz
+            ${{runner.temp}}/workshops-all.zip
             ${{runner.temp}}/workshops-colours.yaml
+            ${{runner.temp}}/workshops-colours.tar.gz
+            ${{runner.temp}}/workshops-colours.zip
             ${{runner.temp}}/workshops-animals.yaml
-            resources/trainingportal.yaml
+            ${{runner.temp}}/workshops-animals.tar.gz
+            ${{runner.temp}}/workshops-animals.zip

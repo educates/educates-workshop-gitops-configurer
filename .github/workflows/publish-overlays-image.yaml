@@ -3,8 +3,14 @@ run-name: Publish Overlays Image to ghcr.io
 
 on:
   push:
+    tags:
+      - "[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+-alpha.[0-9]+"
+      - "[0-9]+.[0-9]+-beta.[0-9]+"
+      - "[0-9]+.[0-9]+-rc.[0-9]+"
     branches:
       - main
+      - develop
     paths:
       - overlays/**
   workflow_dispatch:
