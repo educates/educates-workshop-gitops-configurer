@@ -1,0 +1,100 @@
+name: Publish Workshops
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+-alpha.[0-9]+"
+      - "[0-9]+.[0-9]+-beta.[0-9]+"
+      - "[0-9]+.[0-9]+-rc.[0-9]+"
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+jobs:
+  publish-workshops:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Carvel tools
+        shell: bash
+        run: curl -L https://carvel.dev/install.sh | bash
+
+      - name: Install Educates CLI
+        shell: bash
+        run: |
+          # curl -Lo /usr/local/bin/educates https://github.com/vmware-tanzu-labs/educates-training-platform/releases/download/2.7.2/educates-linux-amd64
+          # chmod +x /usr/local/bin/educates
+          imgpkg pull -i ghcr.io/vmware-tanzu-labs/educates-client-programs:2.7.2 -o /tmp/client-programs
+          mv /tmp/client-programs/educates-linux-amd64 /usr/local/bin/educates
+
+      - name: Setup repository variables and release details
+        shell: bash
+        run: |
+          REPOSITORY_NAME=${{github.event.repository.name}}
+          echo "REPOSITORY_NAME=${REPOSITORY_NAME,,}" >>${GITHUB_ENV}
+          echo "REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
+          echo "REPOSITORY_TAG=${GITHUB_REF##*/}" >>${GITHUB_ENV}
+
+      - name: Publish workshops and create workshop definitions for bundle-colours
+        shell: bash
+        run: |
+          for WORKSHOP_DIRECTORY in workshops/bundle-colours/*; do
+            mkdir -p ${{runner.temp}}/${WORKSHOP_DIRECTORY}/resources
+            educates publish-workshop ${WORKSHOP_DIRECTORY} \
+              --export-workshop ${{runner.temp}}/${WORKSHOP_DIRECTORY}/resources/workshop.yaml \
+              --image-repository=ghcr.io/${REPOSITORY_OWNER} \
+              --workshop-version=${REPOSITORY_TAG} \
+              --registry-username=${{github.actor}} \
+              --registry-password=${{secrets.GITHUB_TOKEN}}
+          done
+
+      - name: Publish workshops and create workshop definitions for bundle-animals
+        shell: bash
+        run: |
+          for WORKSHOP_DIRECTORY in workshops/bundle-animals/*; do
+            mkdir -p ${{runner.temp}}/${WORKSHOP_DIRECTORY}/resources/
+            educates publish-workshop ${WORKSHOP_DIRECTORY} \
+               --export-workshop ${{runner.temp}}/${WORKSHOP_DIRECTORY}/resources/workshop.yaml \
+               --image-repository=ghcr.io/${REPOSITORY_OWNER} \
+               --workshop-version=${REPOSITORY_TAG} \
+               --registry-username=${{github.actor}} \
+               --registry-password=${{secrets.GITHUB_TOKEN}}
+          done
+
+      - name: Generate archives containing the workshop definitions
+        shell: bash
+        run: |
+          ytt -f ${{runner.temp}}/workshops > ${{runner.temp}}/workshops-all.yaml
+          (cd ${{runner.temp}}; tar cvfz workshops-all.tar.gz workshops)
+          (cd ${{runner.temp}}; zip workshops-all.zip -r workshops)
+
+          ytt -f ${{runner.temp}}/workshops/bundle-colours > ${{runner.temp}}/workshops-colours.yaml
+          (cd ${{runner.temp}}; tar cvfz workshops-colours.tar.gz workshops/bundle-colours)
+          (cd ${{runner.temp}}; zip workshops-colours.zip -r workshops/bundle-colours)
+
+          ytt -f ${{runner.temp}}/workshops/bundle-animals > ${{runner.temp}}/workshops-animals.yaml
+          (cd ${{runner.temp}}; tar cvfz workshops-animals.tar.gz workshops/bundle-animals)
+          (cd ${{runner.temp}}; zip workshops-animals.zip -r workshops/bundle-animals)
+
+      - name: Create the GitHub release for the workshops
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: ${{env.REPOSITORY_TAG}}
+          name: ${{env.REPOSITORY_NAME}}:${{env.REPOSITORY_TAG}}
+          draft: false
+          prerelease: false
+          files: |
+            ${{runner.temp}}/workshops.tar.gz
+            ${{runner.temp}}/workshops.zip
+            ${{runner.temp}}/workshops-all.yaml
+            ${{runner.temp}}/workshops-colours.yaml
+            ${{runner.temp}}/workshops-animals.yaml
+            resources/trainingportal.yaml

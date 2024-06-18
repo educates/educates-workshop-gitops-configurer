@@ -12,7 +12,13 @@ educates admin cluster create --config kind-config.yaml
     imgpkg --debug push -i localhost:5001/gitops-configurer:devel -f ../overlays
     ```
 
-2.  Create your version of the configuration files in the [versions](./secret-versions.yaml), [common](./secret-common.yaml) and 
+2.  Create the required [RBAC](./rbac.yaml).
+
+    ```
+    kubectl apply -f rbac.yaml
+    ```
+
+3.  Create your version of the configuration files in the [versions](./secret-versions.yaml), [common](./secret-common.yaml) and 
     [workshops](./secret-workshops.yaml) secrets and deploy them into the cluster:
 
     ```
@@ -21,14 +27,13 @@ educates admin cluster create --config kind-config.yaml
     kubectl apply -f secret-workshops.yaml
     ```
 
-3.  Create the required [RBAC](./rbac.yaml) and [Gitops App definition](./crd-devel.yaml) and deploy it into your cluster.
+4.  Create the required [Gitops App definition](./crd-devel.yaml) and deploy it into your cluster.
 
     ```
-    kubectl apply -f rbac.yaml
     kubectl apply -f crd-devel.yaml
     ```
 
-4. If you want to test any change in configuration, modify the appropriate secret and apply it into the cluster and wait for a reconciliation.
+5. If you want to test any change in configuration, modify the appropriate secret and apply it into the cluster and wait for a reconciliation.
    If you don't want to wait, kick the reconciliation manually of the main gitops app:
 
    ```

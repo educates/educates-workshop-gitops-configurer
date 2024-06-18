@@ -181,14 +181,14 @@ This will produce a list of workshops, a trainingportal based on config and kbld
 ytt -v name=workshop-bundle-colours \
     -v mode=app_per_bundle \
     --data-values-file test/portal-app/config \
-    -f test/portal-app/workshops/workshop-bundle-colours \
+    -f workshops/bundle-colours/ \
     -f overlays/portal-app/src/bundle/config/ytt \
     -f overlays/portal-app/src/bundle/config/kapp
 
 ytt -v name=workshop-bundle-animals \
     -v mode=app_per_bundle \
     --data-values-file test/portal-app/config \
-    -f test/portal-app/workshops/workshop-bundle-animals \
+    -f workshops/bundle-animals/ \
     -f overlays/portal-app/src/bundle/config/ytt \
     -f overlays/portal-app/src/bundle/config/kapp
 ```
@@ -197,7 +197,7 @@ ytt -v name=workshop-bundle-animals \
 ytt -v name=global \
     -v mode=one_app \
     --data-values-file test/portal-app/config \
-    -f test/portal-app/workshops/workshop-bundle-animals \
+    -f workshops/workshops/ \
     -f overlays/portal-app/src/bundle/config/ytt \
     -f overlays/portal-app/src/bundle/config/kapp
 ```
